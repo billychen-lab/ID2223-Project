@@ -67,7 +67,7 @@ The core prediction model is a **Random Forest Regressor** trained on **5 histor
 ```text
 hour, dow, is_weekend, lag_1h, lag_24h  ->  trips_per_hour
 ```
-
+---
 ### 2.3 Real-time Ensemble with Bikes/Docks
 
 At prediction time we:

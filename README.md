@@ -4,6 +4,8 @@
 
 > Course project for **ID2223 – Scalable Machine Learning and Deep Learning Systems** @ KTH.
 
+You can use our UI here: https://huggingface.co/spaces/yunquan01/ID2223-Project
+
 ---
 
 ## 1. Project Overview

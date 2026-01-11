@@ -33,7 +33,7 @@ Users can ask questions such as:
 ### 2.1 Data & Feature Store
 
 1. **Historical trip data (offline)**  
-   - Source: Citibike monthly tripdata CSV (e.g., `202509-citibike-tripdata_1.csv`).  
+   - Source: Citibike monthly tripdata CSV (e.g., `202509-citibike-tripdata_1.csv` and many other tripdata CSV files for Sep 2025, because the data of Sep 2025 is very complete and it is close to the current time).  
    - Processed into an **offline feature group** in Hopsworks: `citibike_hourly_station` (v2).  
    - Main columns:
      - `start_station_id`

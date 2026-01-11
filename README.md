@@ -86,10 +86,10 @@ At prediction time we:
    * `occ_ratio = bikes / capacity`
    * Scale `occ_ratio` so that its mean matches `mean(y_hist)` → a rough **real-time demand signal** `y_rt`.
 
-4. Combine them into a **50 / 50 ensemble**:
+4. Combine them into a **40 / 60 ensemble**:
 
    ```python
-   y_final = 0.5 * y_hist + 0.5 * y_rt
+   y_final = 0.4 * y_hist + 0.6 * y_rt
    ```
 
 5. Save all results into a CSV, e.g.
@@ -163,10 +163,7 @@ To make the LLM **grounded in the latest predictions**, we:
     2. Rebuild / load RAG index via `build_rag_index.py`.
     3. Call `bike_agent.answer(question)` and stream the result to the chat UI.
 
-The UI is deployed as a **Hugging Face Space**:
-
-> 👉 Live demo: **Citibike Intelligent Assistant**
-> (replace this line with your actual Space URL)
+The UI is deployed as a **Hugging Face Space**
 
 ---
 
@@ -182,8 +179,6 @@ The UI is deployed as a **Hugging Face Space**:
 ├── feature6_predict_next_hour_with_lag_all_stations.py
 │                                         # End-to-end pipeline: offline+online FG -> ensemble predictions CSV
 ├── station_id_mapping.csv                # Precomputed mapping (can be rebuilt)
-├── citibike-tripdata_1.csv               # Raw tripdata used for station names & mapping
-├── requirements.txt                      # Python dependencies
 └── README.md
 ```
 
@@ -191,77 +186,7 @@ The UI is deployed as a **Hugging Face Space**:
 
 ---
 
-## 4. How to Run Locally
-
-### 4.1 Prerequisites
-
-* Python **3.10–3.12**
-* A Hopsworks project with:
-
-  * Offline FG: `citibike_hourly_station` (version 2)
-  * Online FG: `citibike_hourly_station_online` (version 1)
-* Environment variables:
-
-  ```bash
-  export HOPSWORKS_API_KEY="YOUR_HOPSWORKS_API_KEY"
-  export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
-  ```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4.2 Step 1 – Build / Update Station ID Mapping (once)
-
-If you haven’t created `station_id_mapping.csv` yet:
-
-```bash
-python build_station_id_mapping.py
-```
-
-This scans the raw tripdata (`citibike-tripdata_1.csv`) and builds the mapping between **offline numeric ids** and **GBFS UUID station ids**.
-
-### 4.3 Step 2 – Run Real-time Prediction Pipeline
-
-Generate the latest ensemble predictions (this script can also call `feature3_ingest_online.py` internally, or you run it separately):
-
-```bash
-python feature3_ingest_online.py
-python feature6_predict_next_hour_with_lag_all_stations.py
-```
-
-After it finishes you should see a file similar to:
-
-```text
-predictions_with_lag_next_hour_all_stations_ensemble.csv
-```
-
-### 4.4 Step 3 – Build RAG Index
-
-```bash
-python build_rag_index.py
-```
-
-This creates a folder (e.g. `rag_index/`) holding FAISS index files and metadata, ready for retrieval.
-
-### 4.5 Step 4 – Launch the Chat UI
-
-```bash
-python app.py
-```
-
-Then open the printed local URL in your browser.
-
-Use the sidebar to choose **run mode**:
-
-* “Always refresh predictions & index” – recomputes predictions + RAG every time (freshest).
-* “Use existing index” – only does RAG + LLM, using the last built CSV/index.
-
----
-
-## 5. Example Queries
+## 4. Example Queries
 
 Here are some example questions the assistant can answer:
 
@@ -278,7 +203,7 @@ Behind the scenes, the agent:
 
 ---
 
-## 6. How This Meets the Course Requirements
+## 5. How This Meets the Course Requirements
 
 * ✅ **Non-trivial data source**
   Uses historical Citibike tripdata + real-time GBFS station status.
@@ -303,7 +228,7 @@ Behind the scenes, the agent:
 
 ---
 
-## 7. Limitations & Future Work
+## 6. Limitations & Future Work
 
 * Ensemble is a **simple heuristic**; could be improved with a learned model combining more features.
 * Only uses **one month** of tripdata; adding more months could improve robustness.
@@ -312,14 +237,15 @@ Behind the scenes, the agent:
 
 ---
 
-## 8. 中文简要说明 (Chinese Summary)
+## 7. Brief Description (Summary)
 
-本项目实现了一个 **Citibike 智能助理**：
+This project implements a **Citibike Smart Assistant**:
 
-* 从 **Hopsworks 特征库** 读取历史特征（含 `lag_1h` / `lag_24h`），并用随机森林模型预测每个车站下一小时的需求；
-* 从 **Citibike GBFS** 实时拉取 `num_bikes_available` / `num_docks_available`，构造占用率特征，并与历史模型做 **50/50 融合**；
-* 将最新一轮预测结果 CSV 建成 **RAG 索引（FAISS + SentenceTransformer）**；
-* 使用 **OpenAI LLM** 做问答，通过 Web UI（Hugging Face Space）与用户交互，可以用自然语言问“下一小时哪里最适合借车”、“哪些车站会最忙”等问题。
+* It reads historical features (including `lag_1h` / `lag_24h`) from the **Hopsworks feature store**, and uses a Random Forest model to predict next-hour demand for each station;
+* It pulls real-time `num_bikes_available` / `num_docks_available` from **Citibike GBFS**, builds an occupancy-rate feature, and performs a **40/60 fusion** with the historical model;
+* It turns the latest round of prediction results (CSV) into a **RAG index (FAISS + SentenceTransformer)**;
+* It uses an **OpenAI LLM** for Q&A, and interacts with users via a Web UI (Hugging Face Space), allowing natural-language questions like “Where is the best place to rent a bike in the next hour?” and “Which stations will be the busiest?”
+
 
 
 

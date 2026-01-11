@@ -76,7 +76,7 @@ At prediction time we:
 
    ```python
    y_hist = model.predict([hour, dow, is_weekend, lag_1h, lag_24h])
-````
+
 
 2. Read the latest **online features** (`num_bikes_available`, `num_docks_available`) from the online FG, mapped to offline station ids.
 

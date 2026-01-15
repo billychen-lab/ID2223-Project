@@ -246,6 +246,9 @@ This project implements a **Citibike Smart Assistant**:
 * It turns the latest round of prediction results (CSV) into a **RAG index (FAISS + SentenceTransformer)**;
 * It uses an **OpenAI LLM** for Q&A, and interacts with users via a Web UI (Hugging Face Space), allowing natural-language questions like “Where is the best place to rent a bike in the next hour?” and “Which stations will be the busiest?”
 
+## 8. Results
 
+We record some of our results here:
+<img src="result1.png" alt="Citibike UI" width="700">
 
 

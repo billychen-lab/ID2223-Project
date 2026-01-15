@@ -249,6 +249,7 @@ This project implements a **Citibike Smart Assistant**:
 ## 8. Results
 
 We record some of our results here:
+
 <img src="result1.png" alt="Citibike UI" width="700">
 
 

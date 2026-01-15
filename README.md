@@ -252,4 +252,5 @@ We record some of our results here:
 
 <img src="result1.png" alt="Citibike UI" width="700">
 
+<img src="result2.png" alt="Citibike UI" width="700">
 
